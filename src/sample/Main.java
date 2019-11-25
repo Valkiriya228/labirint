@@ -17,22 +17,22 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/labirint.fxml"));
-        primaryStage.setTitle("LABIRINT");
-        Scene scene = (new Scene(root, 1187, 853));
-        primaryStage.setScene(scene);
+        public void start(Stage primaryStage) throws Exception {
+            Parent root = FXMLLoader.load(getClass().getResource("/labirint.fxml"));
+            primaryStage.setTitle("LABIRINT");
+            Scene scene = (new Scene(root, 1187, 853));
+            primaryStage.setScene(scene);
 
-        primaryStage.setResizable(false);
-        primaryStage.show();
-
-
+            primaryStage.setResizable(false);
+            primaryStage.show();
 
 
 
 
 
-    }
+
+
+        }
 
 
     public static void main(String[] args) {

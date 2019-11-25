@@ -7,7 +7,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <center>
-        <Label fx:id="aboutwindow" alignment="TOP_CENTER" prefHeight="356.0" prefWidth="564.0" text="Основная задача игры Лабиринт - найти самый короткий путь их точки S  к точке F. Но на пути будут встречаться двери: 0 - открытые, 1 - закрытые. 1 строка вводится в виде матрицы NxM, а последующие строки содержат в себе ряд чисел, идущих через пробел. В каждой строке должно быть одинаковое количество элементов. Элементы S  и F должны храниться в единственном экземпляре. Удачи!" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true" BorderPane.alignment="CENTER">
+        <Label fx:id="aboutwindow" alignment="TOP_CENTER" prefHeight="356.0" prefWidth="564.0" text="Основная задача игры Лабиринт - найти самый короткий путь их точки S  к точке F. Но на пути будут встречаться двери: 0 - открытые, 1 - закрытые. 1 строка вводится в виде матрицы NxM, а последующие строки содержат в себе ряд чисел, идущих через пробел. В каждой строке должно быть одинаковое количество элементов. Элементы S  и F должны храниться в единственном экземпляре. Удачи! " textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true" BorderPane.alignment="CENTER">
             <font>
                 <Font name="Cambria Math" size="25.0" />
             </font></Label>
