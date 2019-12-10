@@ -6,17 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -59,19 +54,18 @@ public class Controller  {
 
     public Integer stroka;
     public Integer stolbets;
-    public ArrayList<String> allelements;
-    public   ArrayList<String> all;
-    private int startx;
-    private int starty;
-    private int finishx;
-    private int  finishy;
-    private Integer k;
-    private Integer c;
-   public ArrayList<String> allel = allelements;
+    public ArrayList<String> allelements = new ArrayList<>();
+
+    private int startX;
+    private int startY;
+    private int finishX;
+    private int  finishY;
+
+
 
     @FXML
     public MenuItem About;
-    private Desktop desktop = Desktop.getDesktop();
+
 
 
     @FXML
@@ -79,9 +73,7 @@ public class Controller  {
 
     @FXML
     public Label label;
-    public String[][] Map = new String[5][5];
-    public String[][] cMap = new String[5][5];
-    public String[][] Map1 = new String[5][5];
+
 
 
     @FXML
@@ -102,13 +94,15 @@ public class Controller  {
 
 
     }
-
-
-
+    private ArrayList<String> lines = new ArrayList<>();
+    private ArrayList<String> all = new ArrayList<>();
 
     public void OpenAction(ActionEvent actionEvent) throws Exception {
-        ArrayList<String> all = new ArrayList<>(); //массив ВСЕХ элементов матрицы для дальнейшего его перебора и удобства
+        //массив ВСЕХ элементов матрицы для дальнейшего его перебора и удобства
 
+        lines.clear();
+        all.clear();
+        allelements.clear();
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file");
@@ -120,7 +114,6 @@ public class Controller  {
             FileReader fileReader = new FileReader(file);// разбиение матрицы по строкам и ее чтение для дальнейших действий
             BufferedReader reader = new BufferedReader(fileReader);
             String line;
-            ArrayList<String> lines = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
@@ -143,7 +136,7 @@ public class Controller  {
 
 
 
-            ArrayList<String> allelements = new ArrayList<>();
+
             for (int i = 1; i < lines.size(); i++) { //проверка на ссответствие размера матрицы и введенной ее пользователем
                 int k = 0;
                 String x = lines.get(i).replace(" ", "");
@@ -193,6 +186,7 @@ public class Controller  {
                 }
                 allelements.add(x);
             }
+            System.out.println(allelements);
 
 
             int cS = 0;
@@ -236,22 +230,8 @@ public class Controller  {
                     }
                 }
             }
-            int o = 0;
-            for (int x = 0; x < stroka; x++) {
-                for (int y = 0; y < stolbets; y++) {
-                    Map[x][y] = (all.get(o));
-                    cMap[x][y] = "0";
-                    if (Map[x][y].equals("s")) {
-                        startx = x;
-                        finishx = y;
-                    }
-                    if (Map[x][y].equals("f")) {
-                        finishx = x;
-                        finishy = y;
-                    }
-                    o++;
-                }
-            }
+
+
             if ((cS != 1) || (cF != 1)) { //проверка на индивидуальность старта (s) и финиша (f)
                 Parent root1;
                 try {
@@ -276,7 +256,7 @@ public class Controller  {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }  //при нескольких значения S/F выбрасывается исключение
-                throw new Exception();
+
             }
 
             try { // создание сетки, таблицы и ввод в нее наших данных
@@ -332,31 +312,67 @@ public class Controller  {
 
     }
 
-    private void logicOfGame1(String[][] Map, int stroka, int stolbets, int startX, int startY, int finishX, int finishY) throws Exception {// все данные которые мы задаем изначально -
+
+
+
+    ArrayList<String> allel = new ArrayList<>();
+    ArrayList<String> array = new ArrayList<>(); //занесение в лист всех элементов конечного двумерного массива
+    private void logicOfGame1() throws Exception {// все данные которые мы задаем изначально -
         // это начальные и конечные координаты финища и старта
+         allel.clear();
+         array.clear();
 
 
-        //имеем двумерный массив с нашими изначальными данными, то бишь 0, 1 и старт/финиш.
+
+        for (int l = 0; l < allelements.size(); l++) {         //занесение всех элементов в один лист + проверка на индивидуальность элементов S и F
+            String[] element = allelements.get(l).split(" ");
+            String a = Arrays.toString(element).replace("[", "").replace("]", "");
+            String[] b = a.split("");
+            allel.addAll(Arrays.asList(b)); //allel - итоговый список со всеми элементами
+        }
+        int stolbets = allelements.get(0).length();
+        int stroka = allelements.size();
+
+        String[][] Map1 = new String[stroka][stolbets]; //итоговый двумерный массив, который мы будем выводить в конце
+        String[][] Map = new String[stroka][stolbets]; //имеем двумерный массив с нашими изначальными данными, то бишь 0, 1 и старт/финиш.
+        String[][] cMap = new String[stroka][stolbets];//двумерный массив, в процессе работы мы работаем с ним и его преобразовываем
+        int o = 0; // заносим в память координаты точек старта и финиша
+        for (int x = 0; x < stroka; x++) {
+            for (int y = 0; y < stolbets; y++) {
+                Map[x][y] = (allel.get(o));
+                cMap[x][y] = "0";
+                if (Map[x][y].equals("s")) {
+                    startY = x;
+                    startX = y;
+                }
+                if (Map[x][y].equals("f")) {
+                    finishY = x;
+                    finishX = y;
+                }
+                o++;
+            }
+        }
+
 
         boolean add = true;
         int step = 0;
         for (int y = 0; y < stroka; y++) {
             for (int x = 0; x < stolbets; x++) {
                 if ("1".equals(Map[y][x])) {
-                    cMap[y][x] = "-2"; //индикатор стены
+                    cMap[y][x] = "-2"; //индикатор стены (блокирует проход)
                 } else {
                     cMap[y][x] = "-1"; // индикатор еще не ступал сюда
                 }
             }
         }
-        cMap[finishY][finishX] = String.valueOf(0);
+        cMap[finishY][finishX] = String.valueOf(0); //будем в дальнейшем для подсчета кратчайшего пути идти от финиша к старту
         while (add) {
             add = false;
-            for (int y = 0; y < stolbets; y++) {
+            for (int y = 0; y < stolbets; y++) { //начинаем уже само распространение волны, пока есть возможности
                 for (int x = 0; x < stroka; x++) {
                     if (cMap[y][x].equals(String.valueOf(step))) {
-                        if (y >= 1 && cMap[y - 1][x].equals("-1")) cMap[y - 1][x] = String.valueOf(step + 1);
-                        if (cMap[y][x - 1].equals("-1")) cMap[y][x - 1] = String.valueOf(step + 1);
+                        if (y >= 1 && cMap[y - 1][x].equals("-1")) cMap[y - 1][x] = String.valueOf(step + 1);    //смотрим все соседние клетки по вертикали и горизонтали и распространяем волну
+                        if (x >= 1 && cMap[y][x - 1].equals("-1")) cMap[y][x - 1] = String.valueOf(step + 1);
                         if (y < stroka - 1 && cMap[y + 1][x].equals("-1")) cMap[y + 1][x] = String.valueOf(step + 1);
                         if (x < stolbets - 1 && cMap[y][x + 1].equals("-1")) cMap[y][x + 1] = String.valueOf(step + 1);
                     }
@@ -368,12 +384,11 @@ public class Controller  {
             if (!cMap[startY][startX].equals(String.valueOf(-1))) add = false; //решение найдено
             if (step > stroka * stolbets) add = false; //решение не найдено
         }
-        System.out.println(Arrays.deepToString(cMap));
             for (int y = 0; y < stroka; y++) {
                 for (int x = 0; x < stolbets; x++) {
                     if (cMap[y][x].equals(String.valueOf(-1))) Map1[y][x] = String.valueOf(0);
                     else if (cMap[y][x].equals(String.valueOf(-2))) Map1[y][x] = String.valueOf(1);
-                    else if (y == startY && x == startX) {
+                    else if (y == startY && x == startX) { //заносим в конечный двумерный массив точки старта и финиша
                         Map1[y][x] = "s";
                     }
                     else if (y == finishY && x == finishX) {
@@ -382,15 +397,36 @@ public class Controller  {
                     else if (Integer.parseInt(cMap[y][x]) > (-1))  Map1[y][x] = String.valueOf("*" + cMap[y][x] + "*");
                 }
             }
-        
-        ArrayList<String> array = new ArrayList<>();
-        for (int y = 0; y < stroka; y++) {
-            for (int x = 0; x < stolbets; x++) {
-                array.add((Map1[y][x]));
+
+
+
+            int k = startY;
+            int s = startX;
+
+            int stepp = step - 1;
+            while (stepp != 0){
+                if ((k > 1 && Map1[k - 1][s].equals("*" + (stepp)+ "*"))) {
+                    Map[k - 1][s] = "*";
+                    k = k - 1;
+                } else if ((s > 1 && Map1[k][s - 1].equals("*" + (stepp)+ "*"))) {
+                        Map[k][s - 1] = "*";
+                        s = s - 1;
+                    } else if ((k < stroka - 1 && Map1[k + 1][s].equals("*" + (stepp)+ "*"))) {
+                    Map[k + 1][s] = "*";
+                    k = k + 1;
+                    } else if ((s < stolbets - 1 && Map1[k][s + 1].equals("*" + (stepp)+ "*"))) {
+                    Map[k][s + 1] = "*";
+                    s = s + 1;
+                }
+                stepp--;
             }
+
+
+        for (int y = 0; y < stroka; y++) {
+            array.addAll(Arrays.asList(Map1[y]).subList(0, stolbets));
         }
 
-        try { // создание сетки, таблицы и ввод в нее наших данных
+        try { // создание и отрисовка новой таблицы с итоговой матрицей
             Stage stage = new Stage();
             // GridPane gridPane = new GridPane();
             if (gridPane == null) { // делаю изначально проверку на наличие на основном окне таблицы,
@@ -436,10 +472,11 @@ public class Controller  {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void logicOfGame(ActionEvent actionEvent) throws Exception {
-        logicOfGame1(Map, 5, 5 , 1, 2 ,2,4);
+        logicOfGame1();
     }
 
 
