@@ -74,7 +74,7 @@ public class Controller  {
     @FXML
     public Label label;
 
-
+       Logic logic = new Logic();
 
     @FXML
     public void initialize() throws IOException {
@@ -96,11 +96,13 @@ public class Controller  {
     }
     private ArrayList<String> lines = new ArrayList<>();
     private ArrayList<String> all = new ArrayList<>();
+    private ArrayList<String> finish = new ArrayList<>();
 
     public void OpenAction(ActionEvent actionEvent) throws Exception {
         //массив ВСЕХ элементов матрицы для дальнейшего его перебора и удобства
 
         lines.clear();
+        finish.clear();
         all.clear();
         allelements.clear();
 
@@ -154,7 +156,6 @@ public class Controller  {
                     throw new Exception();
                 }
                 if (lines.size() - 1 != stroka) {
-                    System.out.println(lines.size() - 1);
                     Parent root1;
                     try {
                         root1 = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("error1.fxml")), resources);
@@ -186,7 +187,6 @@ public class Controller  {
                 }
                 allelements.add(x);
             }
-            System.out.println(allelements);
 
 
             int cS = 0;
@@ -211,10 +211,8 @@ public class Controller  {
                     }
                     if (b[i1].equals("0")) {
                         countzero++;
-                        continue;
                     } else if (b[i1].equals("1")) {
                         countone++;
-                        continue;
                     } else {
                         Parent root1;
                         try {
@@ -299,7 +297,7 @@ public class Controller  {
                     }
                 }
                 gridPane.setLayoutX(375); // размещаю в окне матрицу в середине для удобства пользователя
-                gridPane.setLayoutY(200);
+                gridPane.setLayoutY(100);
                 gridPane.setMinWidth(500);
                 gridPane.setMinHeight(500);
                 AnchorPane.getChildren().add(gridPane); // отображаю матрицу на наше основное окно
@@ -309,23 +307,36 @@ public class Controller  {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (allelements.isEmpty()) {
+            Parent root1;
+            try {
+                root1 = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("error1.fxml")), resources);
+                Stage stage1 = new Stage();
+                stage1.setTitle("Error");
+                stage1.setScene(new Scene(root1, 600, 556));
+                stage1.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
 
     }
 
 
 
 
-    ArrayList<String> allel = new ArrayList<>();
-    ArrayList<String> array = new ArrayList<>(); //занесение в лист всех элементов конечного двумерного массива
+    private ArrayList<String> allel = new ArrayList<>();
+    private ArrayList<String> array = new ArrayList<>(); //занесение в лист всех элементов конечного двумерного массива
     private void logicOfGame1() throws Exception {// все данные которые мы задаем изначально -
         // это начальные и конечные координаты финища и старта
          allel.clear();
          array.clear();
 
 
-
-        for (int l = 0; l < allelements.size(); l++) {         //занесение всех элементов в один лист + проверка на индивидуальность элементов S и F
-            String[] element = allelements.get(l).split(" ");
+        for (String allelement : allelements) {         //занесение всех элементов в один лист + проверка на индивидуальность элементов S и F
+            String[] element = allelement.split(" ");
             String a = Arrays.toString(element).replace("[", "").replace("]", "");
             String[] b = a.split("");
             allel.addAll(Arrays.asList(b)); //allel - итоговый список со всеми элементами
@@ -368,8 +379,8 @@ public class Controller  {
         cMap[finishY][finishX] = String.valueOf(0); //будем в дальнейшем для подсчета кратчайшего пути идти от финиша к старту
         while (add) {
             add = false;
-            for (int y = 0; y < stolbets; y++) { //начинаем уже само распространение волны, пока есть возможности
-                for (int x = 0; x < stroka; x++) {
+            for (int y = 0; y < stroka; y++) { //начинаем уже само распространение волны, пока есть возможности
+                for (int x = 0; x < stolbets; x++) {
                     if (cMap[y][x].equals(String.valueOf(step))) {
                         if (y >= 1 && cMap[y - 1][x].equals("-1")) cMap[y - 1][x] = String.valueOf(step + 1);    //смотрим все соседние клетки по вертикали и горизонтали и распространяем волну
                         if (x >= 1 && cMap[y][x - 1].equals("-1")) cMap[y][x - 1] = String.valueOf(step + 1);
@@ -379,9 +390,8 @@ public class Controller  {
                 }
             }
             step++;
-            add = true;
 
-            if (!cMap[startY][startX].equals(String.valueOf(-1))) add = false; //решение найдено
+            add = cMap[startY][startX].equals(String.valueOf(-1)); //решение найдено
             if (step > stroka * stolbets) add = false; //решение не найдено
         }
             for (int y = 0; y < stroka; y++) {
@@ -405,17 +415,17 @@ public class Controller  {
 
             int stepp = step - 1;
             while (stepp != 0){
-                if ((k > 1 && Map1[k - 1][s].equals("*" + (stepp)+ "*"))) {
-                    Map[k - 1][s] = "*";
+                if ((k >= 1 && Map1[k - 1][s].equals("*" + (stepp)+ "*"))) {
+                    Map[k - 1][s] = "●";
                     k = k - 1;
-                } else if ((s > 1 && Map1[k][s - 1].equals("*" + (stepp)+ "*"))) {
-                        Map[k][s - 1] = "*";
+                } else if ((s >= 1 && Map1[k][s - 1].equals("*" + (stepp)+ "*"))) {
+                        Map[k][s - 1] = "●";
                         s = s - 1;
                     } else if ((k < stroka - 1 && Map1[k + 1][s].equals("*" + (stepp)+ "*"))) {
-                    Map[k + 1][s] = "*";
+                    Map[k + 1][s] = "●";
                     k = k + 1;
                     } else if ((s < stolbets - 1 && Map1[k][s + 1].equals("*" + (stepp)+ "*"))) {
-                    Map[k][s + 1] = "*";
+                    Map[k][s + 1] = "●";
                     s = s + 1;
                 }
                 stepp--;
@@ -423,7 +433,7 @@ public class Controller  {
 
 
         for (int y = 0; y < stroka; y++) {
-            array.addAll(Arrays.asList(Map1[y]).subList(0, stolbets));
+            array.addAll(Arrays.asList(Map[y]).subList(0, stolbets));
         }
 
         try { // создание и отрисовка новой таблицы с итоговой матрицей
@@ -456,8 +466,8 @@ public class Controller  {
 
             int z = 0;
 
-            for (int c = 0; c < Map1.length; c++) { // вношу наши данные значения в ячейки матрицы
-                for (int j = 0; j < Map1[c].length; j++) {
+            for (int c = 0; c < Map.length; c++) { // вношу наши данные значения в ячейки матрицы
+                for (int j = 0; j < Map[c].length; j++) {
                     Label lb = new Label(String.valueOf(array.get(z)));
                     lb.setFont(Font.font(40));
                     gridPane.add(lb, j, c);
@@ -465,7 +475,7 @@ public class Controller  {
                 }
             }
             gridPane.setLayoutX(375); // размещаю в окне матрицу в середине для удобства пользователя
-            gridPane.setLayoutY(200);
+            gridPane.setLayoutY(100);
             gridPane.setMinWidth(500);
             gridPane.setMinHeight(500);
             AnchorPane.getChildren().add(gridPane); // отображаю матрицу на наше основное окно
