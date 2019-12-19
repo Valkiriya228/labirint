@@ -42,7 +42,7 @@ public class test {
         assertEquals(output, log.logicOfGame((ArrayList<String>) input, 1, 2, 2 , 4));
         assertEquals(output1, log.logicOfGame((ArrayList<String>) input1, 5, 0, 2 , 6));
         assertEquals(output2, log.logicOfGame((ArrayList<String>) input2, 3, 0, 1 , 4));
-
     }
+
 
 }

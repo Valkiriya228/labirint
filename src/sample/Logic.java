@@ -1,12 +1,21 @@
 package sample;
 
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 
 public class Logic {
+
+    @FXML
+    private ResourceBundle resources;
 
     public  ArrayList<String> logicOfGame(ArrayList<String> allelements, int startX, int startY, int finishX, int finishY) throws Exception {
         ArrayList<String> allel = new ArrayList<>(); //лист всех итоговых элементов
@@ -52,6 +61,7 @@ public class Logic {
         }
         cMap[finishY][finishX] = String.valueOf(0); //инициализация точки финиша как "0"
                                                     //будем в дальнейшем для подсчета кратчайшего пути идти от финиша к старту
+
         while (add) {
             add = false;
             for (int y = 0; y < stroka; y++) { //начинаем уже само распространение волны, пока есть возможности
@@ -70,6 +80,18 @@ public class Logic {
             else add = false;  //решение найдено, выходим из цикла while
             if (step > stroka * stolbets) add = false; //решение не найдено => решений нет, выходим из цикла while
         }
+        if (cMap[startY][startX].equals(String.valueOf(-1))) {
+            Parent root1; //окно ошибки в случае наличия пустых строк в заданной нами матрице
+            try {
+                root1 = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("noWays.fxml")), resources);
+                Stage stage1 = new Stage();
+                stage1.setTitle("Error");
+                stage1.setScene(new Scene(root1, 600, 556));
+                stage1.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         for (int y = 0; y < stroka; y++) { //заносим в конечный двумерный массив точки старта и финиша а также закрытые двери (1)
             for (int x = 0; x < stolbets; x++) { // и двери, в которые индикатор не ступал и не будет ступать (0)
@@ -84,7 +106,6 @@ public class Logic {
                 else if (Integer.parseInt(cMap[y][x]) > (-1))  Map1[y][x] = ("*" + cMap[y][x] + "*"); //ввод в матрицу ход со значением шага (step)
             }
         }
-
         int k = startY;
         int s = startX;
         int stepp = step - 1;
